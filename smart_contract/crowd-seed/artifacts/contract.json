@@ -1,0 +1,63 @@
+{
+    "name": "CrowdSeed",
+    "methods": [
+        {
+            "name": "bootstrap",
+            "args": [],
+            "returns": {
+                "type": "void"
+            }
+        },
+        {
+            "name": "read_owner",
+            "args": [],
+            "returns": {
+                "type": "address"
+            }
+        },
+        {
+            "name": "read_campaigns",
+            "args": [],
+            "returns": {
+                "type": "uint64"
+            }
+        },
+        {
+            "name": "add_campaign",
+            "args": [
+                {
+                    "type": "address",
+                    "name": "new_member"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            }
+        },
+        {
+            "name": "approveCampaign",
+            "args": [
+                {
+                    "type": "address",
+                    "name": "member"
+                }
+            ],
+            "returns": {
+                "type": "(string,string,uint64,uint64,address,bool)"
+            }
+        },
+        {
+            "name": "get_campaign",
+            "args": [
+                {
+                    "type": "address",
+                    "name": "member"
+                }
+            ],
+            "returns": {
+                "type": "(string,string,uint64,uint64,address,bool)"
+            }
+        }
+    ],
+    "networks": {}
+}

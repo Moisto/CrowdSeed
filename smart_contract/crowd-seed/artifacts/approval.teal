@@ -1,0 +1,468 @@
+#pragma version 8
+intcblock 0 1 53 65536
+bytecblock 0x 0x6f776e6572 0x746f74616c43616d706169676e 0x151f7c75 0x00
+txn NumAppArgs
+intc_0 // 0
+==
+bnz main_l14
+txna ApplicationArgs 0
+pushbytes 0xbec76d87 // "bootstrap()void"
+==
+bnz main_l13
+txna ApplicationArgs 0
+pushbytes 0xe8331a11 // "read_owner()address"
+==
+bnz main_l12
+txna ApplicationArgs 0
+pushbytes 0x519734d6 // "read_campaigns()uint64"
+==
+bnz main_l11
+txna ApplicationArgs 0
+pushbytes 0x751e6fec // "add_campaign(address)void"
+==
+bnz main_l10
+txna ApplicationArgs 0
+pushbytes 0xa7c333c1 // "approveCampaign(address)(string,string,uint64,uint64,address,bool)"
+==
+bnz main_l9
+txna ApplicationArgs 0
+pushbytes 0x924cff1c // "get_campaign(address)(string,string,uint64,uint64,address,bool)"
+==
+bnz main_l8
+err
+main_l8:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub getcampaigncaster_12
+intc_1 // 1
+return
+main_l9:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub approveCampaigncaster_11
+intc_1 // 1
+return
+main_l10:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub addcampaigncaster_10
+intc_1 // 1
+return
+main_l11:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub readcampaignscaster_9
+intc_1 // 1
+return
+main_l12:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub readownercaster_8
+intc_1 // 1
+return
+main_l13:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub bootstrapcaster_7
+intc_1 // 1
+return
+main_l14:
+txn OnCompletion
+intc_0 // NoOp
+==
+bnz main_l16
+err
+main_l16:
+txn ApplicationID
+intc_0 // 0
+==
+assert
+intc_1 // 1
+return
+
+// bootstrap
+bootstrap_0:
+proto 0 0
+intc_0 // 0
+bytec_1 // "owner"
+app_global_get_ex
+store 1
+store 0
+load 1
+!
+assert
+bytec_1 // "owner"
+txn Sender
+app_global_put
+bytec_2 // "totalCampaign"
+intc_0 // 0
+app_global_put
+retsub
+
+// is_owner
+isowner_1:
+proto 1 1
+txn Sender
+bytec_1 // "owner"
+app_global_get
+==
+retsub
+
+// read_owner
+readowner_2:
+proto 0 1
+bytec_0 // ""
+txn Sender
+callsub isowner_1
+// unauthorized
+assert
+bytec_1 // "owner"
+app_global_get
+frame_bury 0
+frame_dig 0
+len
+pushint 32 // 32
+==
+assert
+retsub
+
+// read_campaigns
+readcampaigns_3:
+proto 0 1
+intc_0 // 0
+bytec_2 // "totalCampaign"
+app_global_get
+frame_bury 0
+retsub
+
+// add_campaign
+addcampaign_4:
+proto 1 0
+bytec_0 // ""
+dup
+intc_0 // 0
+dup
+bytec_0 // ""
+intc_0 // 0
+bytec_0 // ""
+intc_0 // 0
+dup
+bytec_0 // ""
+dup
+pushbytes 0x000447617a61 // 0x000447617a61
+frame_bury 0
+pushbytes 0x000d41206e65772070726f6a656374 // 0x000d41206e65772070726f6a656374
+frame_bury 1
+pushint 110 // 110
+frame_bury 2
+intc_0 // 0
+frame_bury 3
+frame_dig -1
+frame_bury 4
+intc_0 // 0
+!
+!
+frame_bury 5
+frame_dig 0
+frame_bury 10
+frame_dig 10
+frame_bury 9
+intc_2 // 53
+frame_bury 7
+frame_dig 7
+frame_dig 10
+len
++
+frame_bury 8
+frame_dig 8
+intc_3 // 65536
+<
+assert
+frame_dig 7
+itob
+extract 6 0
+frame_dig 1
+frame_bury 10
+frame_dig 9
+frame_dig 10
+concat
+frame_bury 9
+frame_dig 8
+frame_bury 7
+frame_dig 7
+itob
+extract 6 0
+concat
+frame_dig 2
+itob
+concat
+frame_dig 3
+itob
+concat
+frame_dig 4
+concat
+bytec 4 // 0x00
+intc_0 // 0
+frame_dig 5
+setbit
+concat
+frame_dig 9
+concat
+frame_bury 6
+frame_dig -1
+box_del
+pop
+frame_dig -1
+frame_dig 6
+box_put
+bytec_2 // "totalCampaign"
+bytec_2 // "totalCampaign"
+app_global_get
+intc_1 // 1
++
+app_global_put
+retsub
+
+// approveCampaign
+approveCampaign_5:
+proto 1 1
+bytec_0 // ""
+dup
+intc_0 // 0
+bytec_0 // ""
+dup
+intc_0 // 0
+dup
+bytec_0 // ""
+intc_0 // 0
+dup
+bytec_0 // ""
+dup
+txn Sender
+callsub isowner_1
+// unauthorized
+assert
+frame_dig -1
+box_get
+store 3
+store 2
+load 3
+assert
+load 2
+frame_bury 1
+intc_1 // 1
+!
+!
+frame_bury 2
+frame_dig 1
+frame_dig 1
+intc_0 // 0
+extract_uint16
+frame_dig 1
+pushint 2 // 2
+extract_uint16
+substring3
+frame_bury 3
+frame_dig 1
+frame_dig 1
+pushint 2 // 2
+extract_uint16
+dig 1
+len
+substring3
+frame_bury 4
+frame_dig 1
+pushint 4 // 4
+extract_uint64
+frame_bury 5
+frame_dig 1
+pushint 12 // 12
+extract_uint64
+frame_bury 6
+frame_dig 1
+extract 20 32
+frame_bury 7
+frame_dig 3
+frame_bury 11
+frame_dig 11
+frame_bury 10
+intc_2 // 53
+frame_bury 8
+frame_dig 8
+frame_dig 11
+len
++
+frame_bury 9
+frame_dig 9
+intc_3 // 65536
+<
+assert
+frame_dig 8
+itob
+extract 6 0
+frame_dig 4
+frame_bury 11
+frame_dig 10
+frame_dig 11
+concat
+frame_bury 10
+frame_dig 9
+frame_bury 8
+frame_dig 8
+itob
+extract 6 0
+concat
+frame_dig 5
+itob
+concat
+frame_dig 6
+itob
+concat
+frame_dig 7
+concat
+bytec 4 // 0x00
+intc_0 // 0
+frame_dig 2
+setbit
+concat
+frame_dig 10
+concat
+frame_bury 1
+frame_dig -1
+box_del
+pop
+frame_dig -1
+frame_dig 1
+box_put
+frame_dig -1
+box_get
+store 5
+store 4
+load 5
+assert
+load 4
+frame_bury 0
+retsub
+
+// get_campaign
+getcampaign_6:
+proto 1 1
+bytec_0 // ""
+frame_dig -1
+box_get
+store 7
+store 6
+load 7
+assert
+load 6
+frame_bury 0
+retsub
+
+// bootstrap_caster
+bootstrapcaster_7:
+proto 0 0
+callsub bootstrap_0
+retsub
+
+// read_owner_caster
+readownercaster_8:
+proto 0 0
+bytec_0 // ""
+callsub readowner_2
+frame_bury 0
+bytec_3 // 0x151f7c75
+frame_dig 0
+concat
+log
+retsub
+
+// read_campaigns_caster
+readcampaignscaster_9:
+proto 0 0
+intc_0 // 0
+callsub readcampaigns_3
+frame_bury 0
+bytec_3 // 0x151f7c75
+frame_dig 0
+itob
+concat
+log
+retsub
+
+// add_campaign_caster
+addcampaigncaster_10:
+proto 0 0
+bytec_0 // ""
+txna ApplicationArgs 1
+frame_bury 0
+frame_dig 0
+callsub addcampaign_4
+retsub
+
+// approveCampaign_caster
+approveCampaigncaster_11:
+proto 0 0
+bytec_0 // ""
+dup
+txna ApplicationArgs 1
+frame_bury 1
+frame_dig 1
+callsub approveCampaign_5
+frame_bury 0
+bytec_3 // 0x151f7c75
+frame_dig 0
+concat
+log
+retsub
+
+// get_campaign_caster
+getcampaigncaster_12:
+proto 0 0
+bytec_0 // ""
+dup
+txna ApplicationArgs 1
+frame_bury 1
+frame_dig 1
+callsub getcampaign_6
+frame_bury 0
+bytec_3 // 0x151f7c75
+frame_dig 0
+concat
+log
+retsub
