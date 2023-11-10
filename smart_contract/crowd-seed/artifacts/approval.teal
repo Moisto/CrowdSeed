@@ -1,71 +1,47 @@
 #pragma version 8
-intcblock 0 1 53 65536
+intcblock 0 1 2 61 65536
 bytecblock 0x 0x6f776e6572 0x746f74616c43616d706169676e 0x151f7c75 0x00
 txn NumAppArgs
 intc_0 // 0
 ==
-bnz main_l14
+bnz main_l20
 txna ApplicationArgs 0
 pushbytes 0xbec76d87 // "bootstrap()void"
 ==
-bnz main_l13
+bnz main_l19
 txna ApplicationArgs 0
 pushbytes 0xe8331a11 // "read_owner()address"
 ==
-bnz main_l12
+bnz main_l18
 txna ApplicationArgs 0
 pushbytes 0x519734d6 // "read_campaigns()uint64"
 ==
+bnz main_l17
+txna ApplicationArgs 0
+pushbytes 0x9e31f2f0 // "add_campaign(string,string,string,uint64,uint64)void"
+==
+bnz main_l16
+txna ApplicationArgs 0
+pushbytes 0x077cdd01 // "approveCampaign(string)(string,string,uint64,uint64,uint64,address,bool)"
+==
+bnz main_l15
+txna ApplicationArgs 0
+pushbytes 0xc930f21e // "get_campaign(string)(string,string,uint64,uint64,uint64,address,bool)"
+==
+bnz main_l14
+txna ApplicationArgs 0
+pushbytes 0xd408f154 // "send_algo_from_escrow(account,uint64)void"
+==
+bnz main_l13
+txna ApplicationArgs 0
+pushbytes 0x14588d41 // "fund_campaign(pay,string)void"
+==
+bnz main_l12
+txna ApplicationArgs 0
+pushbytes 0x963a596e // "fund_escrow_address(pay)void"
+==
 bnz main_l11
-txna ApplicationArgs 0
-pushbytes 0x751e6fec // "add_campaign(address)void"
-==
-bnz main_l10
-txna ApplicationArgs 0
-pushbytes 0xa7c333c1 // "approveCampaign(address)(string,string,uint64,uint64,address,bool)"
-==
-bnz main_l9
-txna ApplicationArgs 0
-pushbytes 0x924cff1c // "get_campaign(address)(string,string,uint64,uint64,address,bool)"
-==
-bnz main_l8
 err
-main_l8:
-txn OnCompletion
-intc_0 // NoOp
-==
-txn ApplicationID
-intc_0 // 0
-!=
-&&
-assert
-callsub getcampaigncaster_12
-intc_1 // 1
-return
-main_l9:
-txn OnCompletion
-intc_0 // NoOp
-==
-txn ApplicationID
-intc_0 // 0
-!=
-&&
-assert
-callsub approveCampaigncaster_11
-intc_1 // 1
-return
-main_l10:
-txn OnCompletion
-intc_0 // NoOp
-==
-txn ApplicationID
-intc_0 // 0
-!=
-&&
-assert
-callsub addcampaigncaster_10
-intc_1 // 1
-return
 main_l11:
 txn OnCompletion
 intc_0 // NoOp
@@ -75,7 +51,7 @@ intc_0 // 0
 !=
 &&
 assert
-callsub readcampaignscaster_9
+callsub fundescrowaddresscaster_18
 intc_1 // 1
 return
 main_l12:
@@ -87,7 +63,7 @@ intc_0 // 0
 !=
 &&
 assert
-callsub readownercaster_8
+callsub fundcampaigncaster_17
 intc_1 // 1
 return
 main_l13:
@@ -99,16 +75,88 @@ intc_0 // 0
 !=
 &&
 assert
-callsub bootstrapcaster_7
+callsub sendalgofromescrowcaster_16
 intc_1 // 1
 return
 main_l14:
 txn OnCompletion
 intc_0 // NoOp
 ==
-bnz main_l16
-err
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub getcampaigncaster_15
+intc_1 // 1
+return
+main_l15:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub approveCampaigncaster_14
+intc_1 // 1
+return
 main_l16:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub addcampaigncaster_13
+intc_1 // 1
+return
+main_l17:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub readcampaignscaster_12
+intc_1 // 1
+return
+main_l18:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub readownercaster_11
+intc_1 // 1
+return
+main_l19:
+txn OnCompletion
+intc_0 // NoOp
+==
+txn ApplicationID
+intc_0 // 0
+!=
+&&
+assert
+callsub bootstrapcaster_10
+intc_1 // 1
+return
+main_l20:
+txn OnCompletion
+intc_0 // NoOp
+==
+bnz main_l22
+err
+main_l22:
 txn ApplicationID
 intc_0 // 0
 ==
@@ -173,11 +221,11 @@ retsub
 
 // add_campaign
 addcampaign_4:
-proto 1 0
+proto 5 0
 bytec_0 // ""
 dup
 intc_0 // 0
-dup
+dupn 2
 bytec_0 // ""
 intc_0 // 0
 bytec_0 // ""
@@ -185,47 +233,54 @@ intc_0 // 0
 dup
 bytec_0 // ""
 dup
-pushbytes 0x000447617a61 // 0x000447617a61
+frame_dig 0
 frame_bury 0
-pushbytes 0x000d41206e65772070726f6a656374 // 0x000d41206e65772070726f6a656374
+frame_dig 1
 frame_bury 1
-pushint 110 // 110
+frame_dig 2
 frame_bury 2
 intc_0 // 0
 frame_bury 3
-frame_dig -1
+frame_dig 4
 frame_bury 4
+txn Sender
+frame_bury 5
+frame_dig 5
+len
+pushint 32 // 32
+==
+assert
 intc_0 // 0
 !
 !
-frame_bury 5
+frame_bury 6
 frame_dig 0
+frame_bury 11
+frame_dig 11
 frame_bury 10
-frame_dig 10
-frame_bury 9
-intc_2 // 53
-frame_bury 7
-frame_dig 7
-frame_dig 10
-len
-+
+intc_3 // 61
 frame_bury 8
 frame_dig 8
-intc_3 // 65536
+frame_dig 11
+len
++
+frame_bury 9
+frame_dig 9
+intc 4 // 65536
 <
 assert
-frame_dig 7
+frame_dig 8
 itob
 extract 6 0
 frame_dig 1
+frame_bury 11
+frame_dig 10
+frame_dig 11
+concat
 frame_bury 10
 frame_dig 9
-frame_dig 10
-concat
-frame_bury 9
+frame_bury 8
 frame_dig 8
-frame_bury 7
-frame_dig 7
 itob
 extract 6 0
 concat
@@ -236,20 +291,25 @@ frame_dig 3
 itob
 concat
 frame_dig 4
+itob
+concat
+frame_dig 5
 concat
 bytec 4 // 0x00
 intc_0 // 0
-frame_dig 5
+frame_dig 6
 setbit
 concat
-frame_dig 9
+frame_dig 10
 concat
-frame_bury 6
-frame_dig -1
+frame_bury 7
+frame_dig -5
+extract 2 0
 box_del
 pop
-frame_dig -1
-frame_dig 6
+frame_dig -5
+extract 2 0
+frame_dig 7
 box_put
 bytec_2 // "totalCampaign"
 bytec_2 // "totalCampaign"
@@ -268,7 +328,7 @@ intc_0 // 0
 bytec_0 // ""
 dup
 intc_0 // 0
-dup
+dupn 2
 bytec_0 // ""
 intc_0 // 0
 dup
@@ -279,6 +339,7 @@ callsub isowner_1
 // unauthorized
 assert
 frame_dig -1
+extract 2 0
 box_get
 store 3
 store 2
@@ -295,13 +356,13 @@ frame_dig 1
 intc_0 // 0
 extract_uint16
 frame_dig 1
-pushint 2 // 2
+intc_2 // 2
 extract_uint16
 substring3
 frame_bury 3
 frame_dig 1
 frame_dig 1
-pushint 2 // 2
+intc_2 // 2
 extract_uint16
 dig 1
 len
@@ -316,35 +377,39 @@ pushint 12 // 12
 extract_uint64
 frame_bury 6
 frame_dig 1
-extract 20 32
+pushint 20 // 20
+extract_uint64
 frame_bury 7
-frame_dig 3
-frame_bury 11
-frame_dig 11
-frame_bury 10
-intc_2 // 53
+frame_dig 1
+extract 28 32
 frame_bury 8
-frame_dig 8
-frame_dig 11
-len
-+
+frame_dig 3
+frame_bury 12
+frame_dig 12
+frame_bury 11
+intc_3 // 61
 frame_bury 9
 frame_dig 9
-intc_3 // 65536
+frame_dig 12
+len
++
+frame_bury 10
+frame_dig 10
+intc 4 // 65536
 <
 assert
-frame_dig 8
+frame_dig 9
 itob
 extract 6 0
 frame_dig 4
+frame_bury 12
+frame_dig 11
+frame_dig 12
+concat
 frame_bury 11
 frame_dig 10
-frame_dig 11
-concat
-frame_bury 10
+frame_bury 9
 frame_dig 9
-frame_bury 8
-frame_dig 8
 itob
 extract 6 0
 concat
@@ -355,22 +420,28 @@ frame_dig 6
 itob
 concat
 frame_dig 7
+itob
+concat
+frame_dig 8
 concat
 bytec 4 // 0x00
 intc_0 // 0
 frame_dig 2
 setbit
 concat
-frame_dig 10
+frame_dig 11
 concat
 frame_bury 1
 frame_dig -1
+extract 2 0
 box_del
 pop
 frame_dig -1
+extract 2 0
 frame_dig 1
 box_put
 frame_dig -1
+extract 2 0
 box_get
 store 5
 store 4
@@ -385,6 +456,7 @@ getcampaign_6:
 proto 1 1
 bytec_0 // ""
 frame_dig -1
+extract 2 0
 box_get
 store 7
 store 6
@@ -394,14 +466,181 @@ load 6
 frame_bury 0
 retsub
 
+// send_algo_from_escrow
+sendalgofromescrow_7:
+proto 2 0
+itxn_begin
+intc_1 // pay
+itxn_field TypeEnum
+frame_dig -2
+txnas Accounts
+itxn_field Receiver
+frame_dig -1
+itxn_field Amount
+itxn_submit
+retsub
+
+// fund_campaign
+fundcampaign_8:
+proto 2 0
+bytec_0 // ""
+dupn 2
+intc_0 // 0
+dup
+bytec_0 // ""
+intc_0 // 0
+dupn 3
+bytec_0 // ""
+dup
+frame_dig -2
+gtxns Amount
+intc_0 // 0
+>
+// Invalid amount, receiver or type_enum.
+assert
+frame_dig -2
+gtxns Receiver
+global CurrentApplicationAddress
+==
+// Invalid amount, receiver or type_enum.
+assert
+frame_dig -2
+gtxns TypeEnum
+intc_1 // pay
+==
+// Invalid amount, receiver or type_enum.
+assert
+frame_dig 0
+frame_dig 0
+intc_0 // 0
+extract_uint16
+frame_dig 0
+intc_2 // 2
+extract_uint16
+substring3
+frame_bury 1
+frame_dig 0
+frame_dig 0
+intc_2 // 2
+extract_uint16
+dig 1
+len
+substring3
+frame_bury 2
+frame_dig 0
+pushint 4 // 4
+extract_uint64
+frame_bury 3
+frame_dig 0
+pushint 20 // 20
+extract_uint64
+frame_bury 4
+frame_dig 0
+extract 28 32
+frame_bury 5
+frame_dig 0
+pushint 480 // 480
+getbit
+frame_bury 6
+frame_dig 0
+pushint 12 // 12
+extract_uint64
+frame_bury 7
+frame_dig 7
+frame_dig -2
+gtxns Amount
++
+frame_bury 7
+frame_dig 1
+frame_bury 11
+frame_dig 11
+frame_bury 10
+intc_3 // 61
+frame_bury 8
+frame_dig 8
+frame_dig 11
+len
++
+frame_bury 9
+frame_dig 9
+intc 4 // 65536
+<
+assert
+frame_dig 8
+itob
+extract 6 0
+frame_dig 2
+frame_bury 11
+frame_dig 10
+frame_dig 11
+concat
+frame_bury 10
+frame_dig 9
+frame_bury 8
+frame_dig 8
+itob
+extract 6 0
+concat
+frame_dig 3
+itob
+concat
+frame_dig 7
+itob
+concat
+frame_dig 4
+itob
+concat
+frame_dig 5
+concat
+bytec 4 // 0x00
+intc_0 // 0
+frame_dig 6
+setbit
+concat
+frame_dig 10
+concat
+frame_bury 0
+frame_dig -1
+extract 2 0
+box_del
+pop
+frame_dig -1
+extract 2 0
+frame_dig 0
+box_put
+retsub
+
+// fund_escrow_address
+fundescrowaddress_9:
+proto 1 0
+frame_dig -1
+gtxns Amount
+intc_0 // 0
+>
+// Invalid amount, receiver or type_enum.
+assert
+frame_dig -1
+gtxns Receiver
+global CurrentApplicationAddress
+==
+// Invalid amount, receiver or type_enum.
+assert
+frame_dig -1
+gtxns TypeEnum
+intc_1 // pay
+==
+// Invalid amount, receiver or type_enum.
+assert
+retsub
+
 // bootstrap_caster
-bootstrapcaster_7:
+bootstrapcaster_10:
 proto 0 0
 callsub bootstrap_0
 retsub
 
 // read_owner_caster
-readownercaster_8:
+readownercaster_11:
 proto 0 0
 bytec_0 // ""
 callsub readowner_2
@@ -413,7 +652,7 @@ log
 retsub
 
 // read_campaigns_caster
-readcampaignscaster_9:
+readcampaignscaster_12:
 proto 0 0
 intc_0 // 0
 callsub readcampaigns_3
@@ -426,17 +665,34 @@ log
 retsub
 
 // add_campaign_caster
-addcampaigncaster_10:
+addcampaigncaster_13:
 proto 0 0
 bytec_0 // ""
+dupn 2
+intc_0 // 0
+dup
 txna ApplicationArgs 1
 frame_bury 0
+txna ApplicationArgs 2
+frame_bury 1
+txna ApplicationArgs 3
+frame_bury 2
+txna ApplicationArgs 4
+btoi
+frame_bury 3
+txna ApplicationArgs 5
+btoi
+frame_bury 4
 frame_dig 0
+frame_dig 1
+frame_dig 2
+frame_dig 3
+frame_dig 4
 callsub addcampaign_4
 retsub
 
 // approveCampaign_caster
-approveCampaigncaster_11:
+approveCampaigncaster_14:
 proto 0 0
 bytec_0 // ""
 dup
@@ -452,7 +708,7 @@ log
 retsub
 
 // get_campaign_caster
-getcampaigncaster_12:
+getcampaigncaster_15:
 proto 0 0
 bytec_0 // ""
 dup
@@ -465,4 +721,59 @@ bytec_3 // 0x151f7c75
 frame_dig 0
 concat
 log
+retsub
+
+// send_algo_from_escrow_caster
+sendalgofromescrowcaster_16:
+proto 0 0
+intc_0 // 0
+dup
+txna ApplicationArgs 1
+intc_0 // 0
+getbyte
+frame_bury 0
+txna ApplicationArgs 2
+btoi
+frame_bury 1
+frame_dig 0
+frame_dig 1
+callsub sendalgofromescrow_7
+retsub
+
+// fund_campaign_caster
+fundcampaigncaster_17:
+proto 0 0
+intc_0 // 0
+bytec_0 // ""
+txna ApplicationArgs 1
+frame_bury 1
+txn GroupIndex
+intc_1 // 1
+-
+frame_bury 0
+frame_dig 0
+gtxns TypeEnum
+intc_1 // pay
+==
+assert
+frame_dig 0
+frame_dig 1
+callsub fundcampaign_8
+retsub
+
+// fund_escrow_address_caster
+fundescrowaddresscaster_18:
+proto 0 0
+intc_0 // 0
+txn GroupIndex
+intc_1 // 1
+-
+frame_bury 0
+frame_dig 0
+gtxns TypeEnum
+intc_1 // pay
+==
+assert
+frame_dig 0
+callsub fundescrowaddress_9
 retsub

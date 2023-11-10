@@ -26,8 +26,24 @@
             "name": "add_campaign",
             "args": [
                 {
-                    "type": "address",
-                    "name": "new_member"
+                    "type": "string",
+                    "name": "new_camp"
+                },
+                {
+                    "type": "string",
+                    "name": "name"
+                },
+                {
+                    "type": "string",
+                    "name": "desc"
+                },
+                {
+                    "type": "uint64",
+                    "name": "goal"
+                },
+                {
+                    "type": "uint64",
+                    "name": "deadline"
                 }
             ],
             "returns": {
@@ -38,25 +54,73 @@
             "name": "approveCampaign",
             "args": [
                 {
-                    "type": "address",
-                    "name": "member"
+                    "type": "string",
+                    "name": "new_camp"
                 }
             ],
             "returns": {
-                "type": "(string,string,uint64,uint64,address,bool)"
+                "type": "(string,string,uint64,uint64,uint64,address,bool)"
             }
         },
         {
             "name": "get_campaign",
             "args": [
                 {
-                    "type": "address",
-                    "name": "member"
+                    "type": "string",
+                    "name": "new_camp"
                 }
             ],
             "returns": {
-                "type": "(string,string,uint64,uint64,address,bool)"
+                "type": "(string,string,uint64,uint64,uint64,address,bool)"
             }
+        },
+        {
+            "name": "send_algo_from_escrow",
+            "args": [
+                {
+                    "type": "account",
+                    "name": "receiver"
+                },
+                {
+                    "type": "uint64",
+                    "name": "amount"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            }
+        },
+        {
+            "name": "fund_campaign",
+            "args": [
+                {
+                    "type": "pay",
+                    "name": "txn",
+                    "desc": "The payment transaction to fund the escrow address."
+                },
+                {
+                    "type": "string",
+                    "name": "new_camp"
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Fund projects with Algos."
+        },
+        {
+            "name": "fund_escrow_address",
+            "args": [
+                {
+                    "type": "pay",
+                    "name": "txn",
+                    "desc": "The payment transaction to fund the escrow address."
+                }
+            ],
+            "returns": {
+                "type": "void"
+            },
+            "desc": "Fund escrow address with Algos."
         }
     ],
     "networks": {}
