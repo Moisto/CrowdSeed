@@ -7,6 +7,7 @@ from beaker.lib.storage import BoxMapping
 class CampaignRecord(abi.NamedTuple):
     name: abi.Field[abi.String]
     desc: abi.Field[abi.String]
+    image: abi.Field[abi.String]
     goal: abi.Field[abi.Uint64]
     amount_raised: abi.Field[abi.Uint64]
     deadline: abi.Field[abi.Uint64]
@@ -44,18 +45,13 @@ def read_campaigns(*, output: abi.Uint64) -> pt.Expr:
     return output.set(app.state.totalCampaign)
 
 @app.external
-def add_campaign(new_camp: abi.String, name: abi.String, desc: abi.String, goal: abi.Uint64, deadline: abi.Uint64) -> pt.Expr:
-    #new_total = app.state.totalCampaignincrement(v.get())
+def add_campaign(new_camp: abi.String, name: abi.String, desc: abi.String, image: abi.String, goal: abi.Uint64, deadline: abi.Uint64) -> pt.Expr:
     return pt.Seq(
         #Assert(Global.latest_timestamp() >= deadline.get(), comment="Time should be in future"),
-        (name := abi.String()).set(name),
-        (desc := abi.String()).set(desc),
-        (goal := abi.Uint64()).set(goal),
         (amount_raised := abi.Uint64()).set(pt.Int(0)),
-        (deadline := abi.Uint64()).set(deadline),
         (creator := abi.Address()).set(Txn.sender()),
         (status := abi.Bool()).set(pt.Int(0)),
-        (cr := CampaignRecord()).set(name, desc, goal, amount_raised, deadline, creator, status),
+        (cr := CampaignRecord()).set(name, desc, image, goal, amount_raised, deadline, creator, status),
         app.state.camp_records[new_camp.get()].set(cr),
         app.state.totalCampaign.increment()
         )
@@ -71,11 +67,12 @@ def approveCampaign(new_camp: abi.String, *, output: CampaignRecord) -> Expr:
         new_status.set(Int(1)),
         (name := abi.String()).set(existing_camp.name),
         (desc := abi.String()).set(existing_camp.desc),
+        (image := abi.String()).set(existing_camp.image),
         (goal := abi.Uint64()).set(existing_camp.goal),
         (amount_raised := abi.Uint64()).set(existing_camp.amount_raised),
         (deadline := abi.Uint64()).set(existing_camp.deadline),
         (creator := abi.Address()).set(existing_camp.creator),
-        existing_camp.set(name, desc, goal, amount_raised, deadline, creator, new_status),
+        existing_camp.set(name, desc, image, goal, amount_raised, deadline, creator, new_status),
         app.state.camp_records[new_camp.get()].set(existing_camp),
         app.state.camp_records[new_camp.get()].store_into(output),
     )
@@ -87,15 +84,14 @@ def get_campaign(
     return app.state.camp_records[new_camp.get()].store_into(output)
 
 
-@app.external
-def send_algo_from_escrow(
-    receiver: pt.abi.Account,
+@app.external(read_only=True, authorize=is_owner)
+def withdraw(
     amount: pt.abi.Uint64
 ) -> pt.Expr:
     return pt.InnerTxnBuilder.Execute({
         # You can do some assertion, like checking if the receiver is a particular address
         pt.TxnField.type_enum: pt.TxnType.Payment,
-        pt.TxnField.receiver: receiver.address(),
+        pt.TxnField.receiver: app.state.owner,
         pt.TxnField.amount: amount.get()
     })
 
@@ -107,11 +103,10 @@ def fund_campaign(
     """
     Fund projects with Algos.
 
-   :param pt.abi.PaymentTransaction txn: The payment transaction to fund the escrow address.
+   :param pt.abi.PaymentTransaction txn: The payment transaction to fund the project.
    :rtype: pt.Expr
     """
     existing_camp = CampaignRecord()
-    existing_camp.decode(app.state.camp_records[new_camp.get()].get())
     return pt.Seq(
         pt.Assert(
             txn.get().amount() > pt.Int(0),
@@ -119,26 +114,28 @@ def fund_campaign(
             txn.get().type_enum() == pt.TxnType.Payment,
             comment="Invalid amount, receiver or type_enum."
         ),
+        existing_camp.decode(app.state.camp_records[new_camp.get()].get()),
         (name := abi.String()).set(existing_camp.name),
         (desc := abi.String()).set(existing_camp.desc),
+        (image := abi.String()).set(existing_camp.image),
         (goal := abi.Uint64()).set(existing_camp.goal),
         (deadline := abi.Uint64()).set(existing_camp.deadline),
         (creator := abi.Address()).set(existing_camp.creator),
         (status := abi.Bool()).set(existing_camp.status),
         (amount_raised := abi.Uint64()).set(existing_camp.amount_raised),
         amount_raised.set(amount_raised.get() + txn.get().amount()),
-        existing_camp.set(name, desc, goal, amount_raised, deadline, creator, status),
+        existing_camp.set(name, desc, image, goal, amount_raised, deadline, creator, status),
         app.state.camp_records[new_camp.get()].set(existing_camp),
     )
 
 @app.external
-def fund_escrow_address(
+def deposit(
     txn: pt.abi.PaymentTransaction
 ) -> pt.Expr:
     """
-    Fund escrow address with Algos.
+    Fund the contract.
 
-   :param pt.abi.PaymentTransaction txn: The payment transaction to fund the escrow address.
+   :param pt.abi.PaymentTransaction txn: The payment transaction to fund the contract.
    :rtype: pt.Expr
     """
     return pt.Seq(

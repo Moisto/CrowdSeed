@@ -38,6 +38,10 @@
                     "name": "desc"
                 },
                 {
+                    "type": "string",
+                    "name": "image"
+                },
+                {
                     "type": "uint64",
                     "name": "goal"
                 },
@@ -59,7 +63,7 @@
                 }
             ],
             "returns": {
-                "type": "(string,string,uint64,uint64,uint64,address,bool)"
+                "type": "(string,string,string,uint64,uint64,uint64,address,bool)"
             }
         },
         {
@@ -71,16 +75,12 @@
                 }
             ],
             "returns": {
-                "type": "(string,string,uint64,uint64,uint64,address,bool)"
+                "type": "(string,string,string,uint64,uint64,uint64,address,bool)"
             }
         },
         {
-            "name": "send_algo_from_escrow",
+            "name": "withdraw",
             "args": [
-                {
-                    "type": "account",
-                    "name": "receiver"
-                },
                 {
                     "type": "uint64",
                     "name": "amount"
@@ -96,7 +96,7 @@
                 {
                     "type": "pay",
                     "name": "txn",
-                    "desc": "The payment transaction to fund the escrow address."
+                    "desc": "The payment transaction to fund the project."
                 },
                 {
                     "type": "string",
@@ -109,18 +109,18 @@
             "desc": "Fund projects with Algos."
         },
         {
-            "name": "fund_escrow_address",
+            "name": "deposit",
             "args": [
                 {
                     "type": "pay",
                     "name": "txn",
-                    "desc": "The payment transaction to fund the escrow address."
+                    "desc": "The payment transaction to fund the contract."
                 }
             ],
             "returns": {
                 "type": "void"
             },
-            "desc": "Fund escrow address with Algos."
+            "desc": "Fund the contract."
         }
     ],
     "networks": {}

@@ -1,5 +1,5 @@
 #pragma version 8
-intcblock 0 1 2 61 65536
+intcblock 0 1 65536 2
 bytecblock 0x 0x6f776e6572 0x746f74616c43616d706169676e 0x151f7c75 0x00
 txn NumAppArgs
 intc_0 // 0
@@ -18,19 +18,19 @@ pushbytes 0x519734d6 // "read_campaigns()uint64"
 ==
 bnz main_l17
 txna ApplicationArgs 0
-pushbytes 0x9e31f2f0 // "add_campaign(string,string,string,uint64,uint64)void"
+pushbytes 0x992615c4 // "add_campaign(string,string,string,string,uint64,uint64)void"
 ==
 bnz main_l16
 txna ApplicationArgs 0
-pushbytes 0x077cdd01 // "approveCampaign(string)(string,string,uint64,uint64,uint64,address,bool)"
+pushbytes 0xe491f724 // "approveCampaign(string)(string,string,string,uint64,uint64,uint64,address,bool)"
 ==
 bnz main_l15
 txna ApplicationArgs 0
-pushbytes 0xc930f21e // "get_campaign(string)(string,string,uint64,uint64,uint64,address,bool)"
+pushbytes 0x53f55704 // "get_campaign(string)(string,string,string,uint64,uint64,uint64,address,bool)"
 ==
 bnz main_l14
 txna ApplicationArgs 0
-pushbytes 0xd408f154 // "send_algo_from_escrow(account,uint64)void"
+pushbytes 0x21f1ddff // "withdraw(uint64)void"
 ==
 bnz main_l13
 txna ApplicationArgs 0
@@ -38,7 +38,7 @@ pushbytes 0x14588d41 // "fund_campaign(pay,string)void"
 ==
 bnz main_l12
 txna ApplicationArgs 0
-pushbytes 0x963a596e // "fund_escrow_address(pay)void"
+pushbytes 0x3625e4eb // "deposit(pay)void"
 ==
 bnz main_l11
 err
@@ -51,7 +51,7 @@ intc_0 // 0
 !=
 &&
 assert
-callsub fundescrowaddresscaster_18
+callsub depositcaster_18
 intc_1 // 1
 return
 main_l12:
@@ -75,7 +75,7 @@ intc_0 // 0
 !=
 &&
 assert
-callsub sendalgofromescrowcaster_16
+callsub withdrawcaster_16
 intc_1 // 1
 return
 main_l14:
@@ -221,11 +221,8 @@ retsub
 
 // add_campaign
 addcampaign_4:
-proto 5 0
-bytec_0 // ""
-dup
+proto 6 0
 intc_0 // 0
-dupn 2
 bytec_0 // ""
 intc_0 // 0
 bytec_0 // ""
@@ -233,19 +230,11 @@ intc_0 // 0
 dup
 bytec_0 // ""
 dup
-frame_dig 0
+intc_0 // 0
 frame_bury 0
-frame_dig 1
-frame_bury 1
-frame_dig 2
-frame_bury 2
-intc_0 // 0
-frame_bury 3
-frame_dig 4
-frame_bury 4
 txn Sender
-frame_bury 5
-frame_dig 5
+frame_bury 1
+frame_dig 1
 len
 pushint 32 // 32
 ==
@@ -253,63 +242,84 @@ assert
 intc_0 // 0
 !
 !
+frame_bury 2
+frame_dig -5
+frame_bury 7
+frame_dig 7
 frame_bury 6
-frame_dig 0
-frame_bury 11
-frame_dig 11
-frame_bury 10
-intc_3 // 61
-frame_bury 8
-frame_dig 8
-frame_dig 11
+pushint 63 // 63
+frame_bury 4
+frame_dig 4
+frame_dig 7
 len
 +
-frame_bury 9
-frame_dig 9
-intc 4 // 65536
+frame_bury 5
+frame_dig 5
+intc_2 // 65536
 <
 assert
-frame_dig 8
-itob
-extract 6 0
-frame_dig 1
-frame_bury 11
-frame_dig 10
-frame_dig 11
-concat
-frame_bury 10
-frame_dig 9
-frame_bury 8
-frame_dig 8
-itob
-extract 6 0
-concat
-frame_dig 2
-itob
-concat
-frame_dig 3
-itob
-concat
 frame_dig 4
 itob
+extract 6 0
+frame_dig -4
+frame_bury 7
+frame_dig 6
+frame_dig 7
 concat
+frame_bury 6
 frame_dig 5
+frame_bury 4
+frame_dig 4
+frame_dig 7
+len
++
+frame_bury 5
+frame_dig 5
+intc_2 // 65536
+<
+assert
+frame_dig 4
+itob
+extract 6 0
+concat
+frame_dig -3
+frame_bury 7
+frame_dig 6
+frame_dig 7
+concat
+frame_bury 6
+frame_dig 5
+frame_bury 4
+frame_dig 4
+itob
+extract 6 0
+concat
+frame_dig -2
+itob
+concat
+frame_dig 0
+itob
+concat
+frame_dig -1
+itob
+concat
+frame_dig 1
 concat
 bytec 4 // 0x00
 intc_0 // 0
-frame_dig 6
+frame_dig 2
 setbit
 concat
-frame_dig 10
+frame_dig 6
 concat
-frame_bury 7
-frame_dig -5
+frame_bury 3
+frame_dig -6
 extract 2 0
 box_del
 pop
-frame_dig -5
+frame_dig -6
 extract 2 0
-frame_dig 7
+frame_dig 3
 box_put
 bytec_2 // "totalCampaign"
 bytec_2 // "totalCampaign"
@@ -326,7 +336,7 @@ bytec_0 // ""
 dup
 intc_0 // 0
 bytec_0 // ""
-dup
+dupn 2
 intc_0 // 0
 dupn 2
 bytec_0 // ""
@@ -356,65 +366,92 @@ frame_dig 1
 intc_0 // 0
 extract_uint16
 frame_dig 1
-intc_2 // 2
+intc_3 // 2
 extract_uint16
 substring3
 frame_bury 3
 frame_dig 1
 frame_dig 1
-intc_2 // 2
+intc_3 // 2
+extract_uint16
+frame_dig 1
+pushint 4 // 4
+extract_uint16
+substring3
+frame_bury 4
+frame_dig 1
+frame_dig 1
+pushint 4 // 4
 extract_uint16
 dig 1
 len
 substring3
-frame_bury 4
-frame_dig 1
-pushint 4 // 4
-extract_uint64
 frame_bury 5
 frame_dig 1
-pushint 12 // 12
+pushint 6 // 6
 extract_uint64
 frame_bury 6
 frame_dig 1
-pushint 20 // 20
+pushint 14 // 14
 extract_uint64
 frame_bury 7
 frame_dig 1
-extract 28 32
+pushint 22 // 22
+extract_uint64
 frame_bury 8
-frame_dig 3
-frame_bury 12
-frame_dig 12
-frame_bury 11
-intc_3 // 61
+frame_dig 1
+extract 30 32
 frame_bury 9
-frame_dig 9
-frame_dig 12
-len
-+
+frame_dig 3
+frame_bury 13
+frame_dig 13
+frame_bury 12
+pushint 63 // 63
 frame_bury 10
 frame_dig 10
-intc 4 // 65536
+frame_dig 13
+len
++
+frame_bury 11
+frame_dig 11
+intc_2 // 65536
 <
 assert
-frame_dig 9
+frame_dig 10
 itob
 extract 6 0
 frame_dig 4
+frame_bury 13
+frame_dig 12
+frame_dig 13
+concat
 frame_bury 12
 frame_dig 11
-frame_dig 12
-concat
-frame_bury 11
+frame_bury 10
 frame_dig 10
-frame_bury 9
-frame_dig 9
+frame_dig 13
+len
++
+frame_bury 11
+frame_dig 11
+intc_2 // 65536
+<
+assert
+frame_dig 10
 itob
 extract 6 0
 concat
 frame_dig 5
+frame_bury 13
+frame_dig 12
+frame_dig 13
+concat
+frame_bury 12
+frame_dig 11
+frame_bury 10
+frame_dig 10
 itob
+extract 6 0
 concat
 frame_dig 6
 itob
@@ -423,13 +460,16 @@ frame_dig 7
 itob
 concat
 frame_dig 8
+itob
+concat
+frame_dig 9
 concat
 bytec 4 // 0x00
 intc_0 // 0
 frame_dig 2
 setbit
 concat
-frame_dig 11
+frame_dig 12
 concat
 frame_bury 1
 frame_dig -1
@@ -466,14 +506,18 @@ load 6
 frame_bury 0
 retsub
 
-// send_algo_from_escrow
-sendalgofromescrow_7:
-proto 2 0
+// withdraw
+withdraw_7:
+proto 1 0
+txn Sender
+callsub isowner_1
+// unauthorized
+assert
 itxn_begin
 intc_1 // pay
 itxn_field TypeEnum
-frame_dig -2
-txnas Accounts
+bytec_1 // "owner"
+app_global_get
 itxn_field Receiver
 frame_dig -1
 itxn_field Amount
@@ -484,7 +528,7 @@ retsub
 fundcampaign_8:
 proto 2 0
 bytec_0 // ""
-dupn 2
+dupn 3
 intc_0 // 0
 dup
 bytec_0 // ""
@@ -510,94 +554,133 @@ intc_1 // pay
 ==
 // Invalid amount, receiver or type_enum.
 assert
+frame_dig -1
+extract 2 0
+box_get
+store 9
+store 8
+load 9
+assert
+load 8
+frame_bury 0
 frame_dig 0
 frame_dig 0
 intc_0 // 0
 extract_uint16
 frame_dig 0
-intc_2 // 2
+intc_3 // 2
 extract_uint16
 substring3
 frame_bury 1
 frame_dig 0
 frame_dig 0
-intc_2 // 2
+intc_3 // 2
+extract_uint16
+frame_dig 0
+pushint 4 // 4
+extract_uint16
+substring3
+frame_bury 2
+frame_dig 0
+frame_dig 0
+pushint 4 // 4
 extract_uint16
 dig 1
 len
 substring3
-frame_bury 2
-frame_dig 0
-pushint 4 // 4
-extract_uint64
 frame_bury 3
 frame_dig 0
-pushint 20 // 20
+pushint 6 // 6
 extract_uint64
 frame_bury 4
 frame_dig 0
-extract 28 32
+pushint 22 // 22
+extract_uint64
 frame_bury 5
 frame_dig 0
-pushint 480 // 480
-getbit
+extract 30 32
 frame_bury 6
 frame_dig 0
-pushint 12 // 12
-extract_uint64
+pushint 496 // 496
+getbit
 frame_bury 7
-frame_dig 7
+frame_dig 0
+pushint 14 // 14
+extract_uint64
+frame_bury 8
+frame_dig 8
 frame_dig -2
 gtxns Amount
 +
-frame_bury 7
-frame_dig 1
-frame_bury 11
-frame_dig 11
-frame_bury 10
-intc_3 // 61
 frame_bury 8
-frame_dig 8
-frame_dig 11
-len
-+
+frame_dig 1
+frame_bury 12
+frame_dig 12
+frame_bury 11
+pushint 63 // 63
 frame_bury 9
 frame_dig 9
-intc 4 // 65536
+frame_dig 12
+len
++
+frame_bury 10
+frame_dig 10
+intc_2 // 65536
 <
 assert
-frame_dig 8
+frame_dig 9
 itob
 extract 6 0
 frame_dig 2
+frame_bury 12
+frame_dig 11
+frame_dig 12
+concat
 frame_bury 11
 frame_dig 10
-frame_dig 11
-concat
-frame_bury 10
+frame_bury 9
 frame_dig 9
-frame_bury 8
-frame_dig 8
+frame_dig 12
+len
++
+frame_bury 10
+frame_dig 10
+intc_2 // 65536
+<
+assert
+frame_dig 9
 itob
 extract 6 0
 concat
 frame_dig 3
-itob
+frame_bury 12
+frame_dig 11
+frame_dig 12
 concat
-frame_dig 7
+frame_bury 11
+frame_dig 10
+frame_bury 9
+frame_dig 9
 itob
+extract 6 0
 concat
 frame_dig 4
 itob
 concat
+frame_dig 8
+itob
+concat
 frame_dig 5
+itob
+concat
+frame_dig 6
 concat
 bytec 4 // 0x00
 intc_0 // 0
-frame_dig 6
+frame_dig 7
 setbit
 concat
-frame_dig 10
+frame_dig 11
 concat
 frame_bury 0
 frame_dig -1
@@ -610,8 +693,8 @@ frame_dig 0
 box_put
 retsub
 
-// fund_escrow_address
-fundescrowaddress_9:
+// deposit
+deposit_9:
 proto 1 0
 frame_dig -1
 gtxns Amount
@@ -668,7 +751,7 @@ retsub
 addcampaigncaster_13:
 proto 0 0
 bytec_0 // ""
-dupn 2
+dupn 3
 intc_0 // 0
 dup
 txna ApplicationArgs 1
@@ -678,16 +761,19 @@ frame_bury 1
 txna ApplicationArgs 3
 frame_bury 2
 txna ApplicationArgs 4
-btoi
 frame_bury 3
 txna ApplicationArgs 5
 btoi
 frame_bury 4
+txna ApplicationArgs 6
+btoi
+frame_bury 5
 frame_dig 0
 frame_dig 1
 frame_dig 2
 frame_dig 3
 frame_dig 4
+frame_dig 5
 callsub addcampaign_4
 retsub
 
@@ -723,21 +809,15 @@ concat
 log
 retsub
 
-// send_algo_from_escrow_caster
-sendalgofromescrowcaster_16:
+// withdraw_caster
+withdrawcaster_16:
 proto 0 0
 intc_0 // 0
-dup
 txna ApplicationArgs 1
-intc_0 // 0
-getbyte
-frame_bury 0
-txna ApplicationArgs 2
 btoi
-frame_bury 1
+frame_bury 0
 frame_dig 0
-frame_dig 1
-callsub sendalgofromescrow_7
+callsub withdraw_7
 retsub
 
 // fund_campaign_caster
@@ -761,8 +841,8 @@ frame_dig 1
 callsub fundcampaign_8
 retsub
 
-// fund_escrow_address_caster
-fundescrowaddresscaster_18:
+// deposit_caster
+depositcaster_18:
 proto 0 0
 intc_0 // 0
 txn GroupIndex
@@ -775,5 +855,5 @@ intc_1 // pay
 ==
 assert
 frame_dig 0
-callsub fundescrowaddress_9
+callsub deposit_9
 retsub
